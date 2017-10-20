@@ -1,7 +1,9 @@
 # ubuntu-sshd
 
 ```bash
-docker run -d -p 10222:22 idocking/ubuntu:16.04
+ID=$(docker run -d -p 10222:22 idocking/ubuntu:16.04)
+docker logs $ID
 ```
 
-default password is 'password'
+root password is random generate by `pwgen -Bsv1 16`, 
+

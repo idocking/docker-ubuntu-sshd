@@ -1,9 +1,11 @@
 FROM ubuntu:16.04
 
 ## For chinese user
-#RUN sed -i "s/http:\/\/archive\.ubuntu\.com/http:\/\/mirrors\.aliyun\.com/g" /etc/apt/sources.list
+RUN sed -i "s/http:\/\/archive\.ubuntu\.com/http:\/\/mirrors\.aliyun\.com/g" /etc/apt/sources.list
 
 ENV NOTVISIBLE "in users profile"
+
+COPY entrypoint /
 
 RUN apt-get update && apt-get install \
 		-y --no-install-recommends \
@@ -18,8 +20,6 @@ RUN apt-get update && apt-get install \
 				pwgen \
 				locales-all \
 	&& mkdir /var/run/sshd \
-	&& ROOTPWD=$(pwgen -Bsv1 16) \
-	&& echo "root:${ROOTPWD}" | chpasswd \
 	&& sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
 	&& sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \
 	&& echo "export VISIBLE=now" >> /etc/profile \
@@ -31,13 +31,12 @@ RUN apt-get update && apt-get install \
 	&& echo "set encoding=prc" >> /etc/vim/vimrc \
 	&& apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && echo "" \
-    && echo "**********************************************************************" \
-    && echo "*** The root password is [${ROOTPWD}], please change is ASAP ***" \
-    && echo "**********************************************************************" \
-    && echo ""
+    && chmod +x /entrypoint \
+    && chsh -s /bin/zsh
 
 
 EXPOSE 22
+
+ENTRYPOINT ["/entrypoint"]
 
 CMD ["/usr/sbin/sshd", "-D"]
