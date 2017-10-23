@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 
 ## For chinese user
-RUN sed -i "s/http:\/\/archive\.ubuntu\.com/http:\/\/mirrors\.aliyun\.com/g" /etc/apt/sources.list
+## RUN sed -i "s/http:\/\/archive\.ubuntu\.com/http:\/\/mirrors\.aliyun\.com/g" /etc/apt/sources.list
 
 ENV NOTVISIBLE "in users profile"
 
